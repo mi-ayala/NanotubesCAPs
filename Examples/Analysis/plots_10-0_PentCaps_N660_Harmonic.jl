@@ -8,9 +8,7 @@ using UnPack, Printf, LaTeXStrings, CairoMakie
 ### Load the data
 data = load("data/10-0_PentCaps_N660_Harmonic.jld2")
 x_newton = data["x_newton"]
-r = data["r"]
-
-r = 1.22287e-11
+r = inf(data["r"])
 
 x = reshape(x_newton[7:end], :, 3)
 x = interval.(x, r; format=:midpoint)

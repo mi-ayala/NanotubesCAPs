@@ -21,7 +21,7 @@ x = interval.(x, r; format=:midpoint)
 x_newton = interval.(x_newton, r; format=:midpoint)
 
 connectivity, _ = get_5_5_connectivity_odd(33)
-
+N = size(connectivity, 1)
 
 type = typeof(x[1, 1])
 b = 1.44
@@ -412,3 +412,4 @@ B = DF_int(x) + T1 * transpose(T1) + T2 * transpose(T2) + T3 * transpose(T3) + I
 # using MAT
 # matwrite("interval_data.mat", Dict("mid" => mid.(B), "rad" => radius.(B)))
 
+### The condition of validating the positivity of all leading principal minors of the Hessian. is checked in MATLAB using the interval arithmetic library INTLAB, which provides an efficient implementation for computing the inverse of interval matrices. This is particularly important in our case, as the matrices involved are of considerable size. Julia-based alternatives exist as well, but INTLAB is currently more efficient for this task.
