@@ -43,3 +43,9 @@ Manifest.toml
 
 # Data
 *.jld2
+
+# Visual Studio Code settings
+.vscode/
+
+# Mac OS specific files
+.DS_Store
