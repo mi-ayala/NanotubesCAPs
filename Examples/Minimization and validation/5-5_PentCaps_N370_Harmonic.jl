@@ -12,13 +12,12 @@ using JLD2
 ### A proof of the (5,5)-nanotube with pentagonal caps and N = 370 atoms using the harmonic potential. We minimize the energy and validate the simulation. All the other examples follow the same implementation structure.
 
 ### We start by minimizing the harmonic energy. Before using carbon parameters,it is easier to converge with all parameters set to 1.
-
 b = 1
 θ = 2π / 3
 kb = 1
 kθ = 1
 
-### Construct the initial configuration for a (5,5) nanotube with and odd number of middle sections(rings).
+### Construct the initial configuration for a (5,5) nanotube with an odd number of middle sections(rings).
 connectivity, x_initial = get_5_5_connectivity_odd(33)
 e = x -> harmonic_energy(x, connectivity, b, θ, kb, kθ)
 
@@ -28,7 +27,7 @@ res = Optim.optimize(e, x_initial, method=algo, g_tol=1e-6; autodiff=:forward)
 x_BFGS = vec(reshape(Optim.minimizer(res), :, 1))
 x_BFGS = center_nanotube_armchair(x_BFGS)
 
-### Newton refinement with the same (unit) parameters.
+### Newton refinement with the same parameters.
 F = x -> extended_Grad(x, x_BFGS, connectivity, b, θ, kb, kθ)
 DF = x -> extended_Hess(x, x_BFGS, connectivity, b, θ, kb, kθ)
 x_newton = newton_method(x -> (F(x), DF(x)), [zeros(6); reshape(x_BFGS, :, 1)];

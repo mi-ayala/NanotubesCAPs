@@ -1,15 +1,12 @@
-#### Plots for the 5-5 Pentagon Caps Nanotube with 360 atoms
-
+#### Energy for (5,5)-nanotube with pentagonal caps and N = 360 atoms using the harmonic potential.
 using NanotubesCAPs
 using IntervalArithmetic
 using CairoMakie
+using Statistics
 using JLD2
-
 using UnPack, Printf, LaTeXStrings, CairoMakie
 
-using Statistics
-
-### Load the data
+### Load the data saved from the validation script.
 data = load("data/5-5_PentCaps_N360_Harmonic.jld2")
 x_newton = data["x_newton"]
 r = inf(data["r"])
@@ -20,7 +17,7 @@ x = interval.(x, r; format=:midpoint)
 
 connectivity, _ = get_5_5_connectivity_even(30)
 
-### Energy
+### Compute total harmonic energy per atom.
 N = size(x, 1)
 b = 1.44
 θ = 2π / 3

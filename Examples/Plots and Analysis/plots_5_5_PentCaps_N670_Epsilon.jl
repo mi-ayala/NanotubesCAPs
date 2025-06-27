@@ -1,48 +1,26 @@
+#### Plots for (5,5)-nanotube with pentagonal caps and N = 670 atoms using the epsilon potential.
 using NanotubesCAPs
 using IntervalArithmetic
-using Statistics
 using CairoMakie
 using JLD2
+using Statistics
 
-using UnPack, Printf, LaTeXStrings
+using UnPack, Printf, LaTeXStrings, CairoMakie
 
+### Load the data saved from the validation script.
+data = load("data/5_5_PentCaps_N670_bond144_1.0e-5.jld2")
 
-### Load the data
-data = load("data/5-5_PentCaps_N670_Harmonic.jld2")
 x_newton = data["x_newton"]
-r = data["r"]
+r = inf(data["r"])
+epsilon = data["epsilon"]
 
-r = 4.68436e-11
 x = reshape(x_newton[7:end], :, 3)
-
 x = center_nanotube_armchair(x)
-
 x = interval.(x, r; format=:midpoint)
-
-connectivity, _ = get_5_5_connectivity_odd(63)
-
-
-# x = reshape(x, :, 3)
-
-
-### Energy
-N = size(x, 1)
-b = 1.44
-θ = 2π / 3
-kb = 469
-kθ = 63
-e = x -> harmonic_energy(x, connectivity, b, θ, kb, kθ)
-E = e(x) / N
-common_decimal_places([sup.(E); inf.(E)])
-sup(E)
-
-
 radii = sqrt.(x[:, 1] .^ 2 + x[:, 2] .^ 2)
-sup(radii[331:340][1])
-common_decimal_places([sup.(radii[331:340]); inf.(radii[331:340])])
 reference_radius = mean(radii[331:340])
 
-
+### Function to plot the signed deviation of the atomic radii from the reference radius, using a smoothed log-linear scale.
 function radii_plot_signed_deviation(
     x1, range, reference_radius, whisker;
     output_path="my_figure.pdf", scale_tol=1e-8
@@ -89,17 +67,17 @@ function radii_plot_signed_deviation(
     half_rings = Int((number_of_rings - 1) / 2)
 
     # Define physical tick values and their transformed positions
-    tick_physical = [-1e-4, -1e-6, -1e-8, 0.0, 1e-8, 1e-6, 1e-4]
+    tick_physical = [-1e-5, -1e-8, -1e-11, 0.0, 1e-11, 1e-8, 1e-5]
     tick_positions = smooth_symlog(tick_physical)
 
     tick_labels = [
-        L"-10^{-4}",
-        L"-10^{-6}",
+        L"-10^{-5}",
         L"-10^{-8}",
+        L"-10^{-11}",
         L"0",
+        L"10^{-11}",
         L"10^{-8}",
-        L"10^{-6}",
-        L"10^{-4}"
+        L"10^{-5}"
     ]
 
 
@@ -109,8 +87,8 @@ function radii_plot_signed_deviation(
         # xlabel=L"\text{Index of cross section}",
         # ylabel=L"\Delta r~\text{[\AA]}",
         titlesize=18,
-        xlabelsize=50,
-        ylabelsize=50,
+        xlabelsize=55,
+        ylabelsize=55,
         xticklabelsize=45,
         yticklabelsize=45,
         topspinevisible=true,
@@ -171,9 +149,5 @@ function radii_plot_signed_deviation(
 end
 
 whisker = 0.0
-radii_plot_signed_deviation(x, 1:61, reference_radius, whisker; output_path="signed_difference_radius_5-5_PentCaps_N670_Harmonic.pdf", scale_tol=1e-9)
-
-whisker = 30
-radii_plot(x, 14:48, whisker; output_path="radius_5-5_PentCaps_N670_Harmonic.pdf")
-
+radii_plot_signed_deviation(x, 1:61, reference_radius, whisker; output_path="signed_difference_radius_5-5_PentCaps_N670_Epsilon_bond144.pdf", scale_tol=1e-12)
 

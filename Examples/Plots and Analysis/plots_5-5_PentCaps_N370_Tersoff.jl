@@ -1,4 +1,4 @@
-#### Plots for the 5-5 Pentagon Caps Nanotube with 370 atoms
+#### Plots for (5,5)-nanotube with pentagonal caps and N = 370 atoms using the Tersoff potential.
 using NanotubesCAPs
 using IntervalArithmetic
 using CairoMakie
@@ -8,22 +8,19 @@ using Statistics
 
 using UnPack, Printf, LaTeXStrings, CairoMakie
 
-### Load the data
+### Load the data saved from the validation script.
 data = load("data/5-5_PentCaps_N370_Tersoff.jld2")
 x_newton = data["x_newton"]
-r = data["r"]
-r = 4.61106e-11
+r = inf(data["r"])
+
 
 connectivity, _ = get_5_5_connectivity_odd(33)
-
-
 x = reshape(x_newton[7:end], :, 3)
 x = center_nanotube_armchair(x)
-
-
 x = interval.(x, r; format=:midpoint)
 
 
+### Compute a reference radius using a central ring of atoms.
 radii = sqrt.(x[:, 1] .^ 2 + x[:, 2] .^ 2)
 reference_radius = mean(radii[181:190])
 
@@ -33,7 +30,7 @@ sup(radii[181:190][1])
 
 common_decimal_places([sup(reference_radius), inf(reference_radius)])
 
-
+### Functions to compute radii, bonds and angles.
 function radii_plot_signed_deviation(
     x1, range, reference_radius, whisker;
     output_path="my_figure.pdf", scale_tol=1e-8
@@ -418,8 +415,8 @@ function plot_armchair_bonds(x, connectivity, numRings, range, reference; output
 
 end
 
+### Plot the radii.
 radii_plot_signed_deviation(x, 1:31, reference_radius, 0.0; output_path="signed_difference_radius_5-5_PentCaps_N370_Tersoff.pdf", scale_tol=1e-9)
-
 
 ### Plot the bonds.
 numRings = 31

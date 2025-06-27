@@ -1,3 +1,5 @@
+### Tersoff potential functions
+
 function Tersoff_energy(x_input::IntervalArithmetic.Interval, parameters, connectivity)
 
     e = zero(eltype(x_input[1]))

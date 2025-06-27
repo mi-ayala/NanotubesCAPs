@@ -11,7 +11,9 @@ using Optim
 
 using UnPack, Printf, LaTeXStrings, CairoMakie
 
+### A proof of the (5,5)-nanotube with pentagonal caps and N = 670 atoms using the epsilon potential. with epsilon equal to 1e-5. We minimize the energy and validate the simulation. All the other examples follow the same implementation structure.
 
+### For this we use quadruple precision.
 setprecision(BigFloat, 128)
 
 
@@ -23,7 +25,6 @@ kb = 1
 kθ = 1
 
 epsilon = 0.00001
-i += 1
 
 e = x -> epsilon_energy(x, connectivity, b, θ, epsilon)
 
@@ -48,6 +49,7 @@ jldsave("5_5_PentCaps_N670_bond144_$epsilon.jld2"; x_newton, epsilon)
 # F_int = x -> extended_Grad_epsilon(x, interval.(reshape(x_BFGS, :, 1)), connectivity, interval(b), interval(θ), interval(epsilon))
 # DF_int = x -> extended_Hess_epsilon(x, interval.(reshape(x_BFGS, :, 1)), connectivity, interval(b), interval(θ), interval(epsilon))
 # r = get_proof(x_newton, F_int, DF_int, 5.6068923423001035e-12)
+### Note that this proof will take a long time to compute, as we are using quadruple precision and interval arithmetic.
 
 
 # ### save the data and the radius

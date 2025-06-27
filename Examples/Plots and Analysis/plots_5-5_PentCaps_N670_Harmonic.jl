@@ -1,24 +1,25 @@
-#### Plots for (5,5)-nanotube with pentagonal caps and N = 370 atoms using the harmonic potential. All the other examples follow the same implementation structure.
+#### Plots for (5,5)-nanotube with pentagonal caps and N = 670 atoms using the harmonic potential.
 using NanotubesCAPs
 using IntervalArithmetic
-using CairoMakie
 using Statistics
+using CairoMakie
 using JLD2
-using UnPack, Printf, LaTeXStrings, CairoMakie
+
+using UnPack, Printf, LaTeXStrings
+
 
 ### Load the data saved from the validation script.
-data = load("data/5-5_PentCaps_N370_Harmonic.jld2")
+data = load("data/5-5_PentCaps_N670_Harmonic.jld2")
 x_newton = data["x_newton"]
-r = inf(data["r"])  # Use the lower bound of the validated radius (rmin)
+r = inf(data["r"])
 
 ### Reshape the configuration and intervalize.
 x = reshape(x_newton[7:end], :, 3)
+x = center_nanotube_armchair(x)
 x = interval.(x, r; format=:midpoint)
+connectivity, _ = get_5_5_connectivity_odd(63)
 
 ### Reconstruct the connectivity for energy and plotting.
-connectivity, _ = get_5_5_connectivity_odd(33)
-
-### Compute total harmonic energy per atom.
 N = size(x, 1)
 b = 1.44
 θ = 2π / 3
@@ -29,13 +30,13 @@ E = e(x) / N
 common_decimal_places([sup.(E); inf.(E)])
 sup(E)
 
-### Compute a reference radius using a central ring of atoms.
-radii = sqrt.(x[:, 1] .^ 2 + x[:, 2] .^ 2)
-reference_radius = mean(radii[181:190])
-sup(radii[181:190][1])
-common_decimal_places([sup.(radii[181:190]); inf.(radii[181:190])])
 
-### Define a function to plot the signed deviation of the atomic radii from the reference radius, using a smoothed log-linear scale.
+radii = sqrt.(x[:, 1] .^ 2 + x[:, 2] .^ 2)
+sup(radii[331:340][1])
+common_decimal_places([sup.(radii[331:340]); inf.(radii[331:340])])
+reference_radius = mean(radii[331:340])
+
+### Function to plot the signed deviation of the atomic radii from the reference radius, using a smoothed log-linear scale.
 function radii_plot_signed_deviation(
     x1, range, reference_radius, whisker;
     output_path="my_figure.pdf", scale_tol=1e-8
@@ -46,13 +47,13 @@ function radii_plot_signed_deviation(
         sign.(y) .* ifelse.(abs.(y) .< t, abs.(y) / t, log10.(abs.(y) ./ t) .+ 1)
     end
 
-    # --- Color palette for plotting ---
+    # --- Color palette ---
     colors = [
         "#0072B2", "#56B4E9", "#009E73", "#CC79A7", "#7570B3",
         "#E69F00", "#D55E00", "#E1E171", "#8B008B", "#A0522D",
     ]
 
-    # --- Organize atoms into rings ---
+    # --- Prepare ring data ---
     N = size(x1, 1)
     ring_count = 10
     boundary_size = 30
@@ -77,11 +78,11 @@ function radii_plot_signed_deviation(
         mid_bound[i] = minimum(mid.(ring_intervals))
     end
 
-    # --- Create figure and axis with scientific styling ---
+    # --- Set up figure and axis ---
     fig = Figure(size=(2000, 600), dpi=600, backgroundcolor=:white)
     half_rings = Int((number_of_rings - 1) / 2)
 
-    # Define physical tick values and their transformed display positions
+    # Define physical tick values and their transformed positions
     tick_physical = [-1e-4, -1e-6, -1e-8, 0.0, 1e-8, 1e-6, 1e-4]
     tick_positions = smooth_symlog(tick_physical)
 
@@ -95,11 +96,15 @@ function radii_plot_signed_deviation(
         L"10^{-4}"
     ]
 
+
+
     ax = Axis(
         fig[1, 1],
+        # xlabel=L"\text{Index of cross section}",
+        # ylabel=L"\Delta r~\text{[\AA]}",
         titlesize=18,
-        xlabelsize=55,
-        ylabelsize=55,
+        xlabelsize=50,
+        ylabelsize=50,
         xticklabelsize=45,
         yticklabelsize=45,
         topspinevisible=true,
@@ -118,7 +123,7 @@ function radii_plot_signed_deviation(
         ytickwidth=4
     )
 
-    # --- Plot deviations for each ring ---
+    # --- Plot each ring's deviations ---
     for i in 1:number_of_rings
         if i ∉ range
             continue
@@ -150,27 +155,20 @@ function radii_plot_signed_deviation(
         end
     end
 
-    # --- Add a smoothed midline showing average trend ---
+    # --- Add smoothed midline ---
     xvals = -half_rings:half_rings
     mid_transformed = smooth_symlog.(mid.(mid_bound))
     lines!(ax, xvals, mid_transformed, color="gray70", linewidth=2)
 
-    # --- Save figure to file ---
     save(output_path, fig)
     return fig
 end
 
 ### Generate and save plot.
 whisker = 0.0
-radii_plot_signed_deviation(
-    x, 1:31, reference_radius, whisker;
-    output_path="signed_difference_radius_5-5_PentCaps_N370_Harmonic.pdf",
-    scale_tol=1e-9
-)
+radii_plot_signed_deviation(x, 1:61, reference_radius, whisker; output_path="signed_difference_radius_5-5_PentCaps_N670_Harmonic.pdf", scale_tol=1e-9)
 
-
-
-
-
+# whisker = 30
+# radii_plot(x, 14:48, whisker; output_path="radius_5-5_PentCaps_N670_Harmonic.pdf")
 
 
