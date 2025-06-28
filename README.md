@@ -11,4 +11,4 @@ Numerical simulations and validated computations produce rigorous mathematical r
 As an example, we observe that the caps induce diameter oscillations along the tube (rather than a monotonous diameter equilibration) with increasing spatial extent for less smooth interaction potentials.
 
 
-<!-- ![Alt text](SolitonsPoster.png) -->
+![Alt text](Poster.png) 
