@@ -3,7 +3,7 @@
 This repository contains the Julia codes associated with the paper: "On the Structure of Carbon Nanotubes: 
 Results from Computer-Assisted Proofs " by M Ayala, R Choksi and B Wirth.
 
-<!-- [🔗 arXiv:2503.04701](https://arxiv.org/abs/2503.04701)   -->
+ [🔗 arXiv:2506.22614](https://arxiv.org/abs/2506.22614)   
 
 ## Abstract
 We present a toolbox based on computer-assisted proofs to rigorously study the structure of capped carbon nanotubes. We model nanotubes as minimizers of an interatomic potential. 
