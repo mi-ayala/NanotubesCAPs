@@ -42,7 +42,7 @@ Manifest.toml
 *.mp4
 
 # Data
-*.jld2
+# *.jld2
 
 # Visual Studio Code settings
 .vscode/
