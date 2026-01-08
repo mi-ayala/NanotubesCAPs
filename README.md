@@ -16,9 +16,8 @@ study capped carbon nanotubes modeled as minimizers of carbon interatomic
 potentials (harmonic, Tersoff, and a Huber potential) and obtain proven
 bounds on tube diameter, bond lengths, and bond angles. In particular, we show
 that caps induce diameter oscillations along the tube. As a second
-application, we consider a finite Lennard--Jones crystal in a face-centered
-cubic (fcc) lattice and provide computer-
-proofs of a local minimizer
+application, we consider a finite Lennard-Jones crystal in a face-centered
+cubic (fcc) lattice and provide computer-proofs of a local minimizer
 representing the perfect crystal, a local minimizer with a single vacancy
 defect, and a saddle point that connects two single-vacancy configurations on
 the energy landscape.
